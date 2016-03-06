@@ -29,7 +29,7 @@ CONVERTED="$LOC_IN/converted"
 # for each file passed, do the thing
 for file in "$@"
 do
-  if [ -f $file ]
+  if [[ -f $file ]]
   then
     if [[ $file == *.mobi ]]
     then

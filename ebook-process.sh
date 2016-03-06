@@ -7,10 +7,26 @@
 ######################################################################################
 
 # Email address for kindle
-KINDLEEMAIL="andyhazz@kindle.com"
+KINDLEEMAIL="andy.nmc@gmail.com"
+
+# Directory to process from
+LOC_IN="/home/pi/nfs/volume1/downloads/ebooks/_togo"
 
 ######################################################################################
 
+# Create directories if they don't exist
+mkdir "$LOC_IN/processing" -p
+PROCESSING="$LOC_IN/processing"
+
+mkdir "$LOC_IN/sent" -p
+SENT="$LOC_IN/sent"
+
+mkdir  "$LOC_IN/converted" -p
+CONVERTED="$LOC_IN/converted"
+
+
+
+# for each file passed, do the thing
 for file in "$@"
 do
   if [ -f $file ]
@@ -18,17 +34,17 @@ do
     if [[ $file == *.mobi ]]
     then
       # send to kindle
-      mv "$file" "processing/$file"
-      mpack -s "${file%.mobi}" "processing/$file" $KINDLEEMAIL
-      mv "processing/$file" "sent/$file"
+      mv "$file" "$PROCESSING/$file"
+      mpack -s "${file%.mobi}" "$PROCESSING/$file" $KINDLEEMAIL
+      mv "$PROCESSING/$file" "$SENT/$file"
     fi
     if [[ $file == *.epub ]]
     then
       # convert then send to kindle
-      mv "$file" "processing/$file"
-      ebook-convert "processing/$file" "converted/${file%.epub}.mobi"
-      mpack -s "${file%.epub}" "converted/${file%.epub}.mobi" $KINDLEEMAIL
-      mv "processing/$file" "sent/$file"
+      mv "$file" "$PROCESSING/$file"
+      ebook-convert "$PROCESSING/$file" "$CONVERTED/${file%.epub}.mobi"
+      mpack -s "${file%.epub}" "$CONVERTED/${file%.epub}.mobi" $KINDLEEMAIL
+      mv "$PROCESSING/$file" "$SENT/$file"
     fi
   fi
 done

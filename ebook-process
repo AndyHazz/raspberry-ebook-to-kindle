@@ -12,6 +12,12 @@ KINDLEEMAIL="andy.nmc@gmail.com"
 # Directory to process from
 LOC_IN="/home/pi/nfs/volume1/downloads/ebooks/_togo"
 
+# Remove converted/sent files after dealing with them? This will leave no files remaining
+# which is fine if you keep a safe copy elsewhere
+KEEP_ORIGINAL=No     # Original files will end up in the 'sent' subdir
+KEEP_CONVERTED=No    # ... and converted files in the 'converted' subdir
+
+
 ######################################################################################
 
 # Create directories if they don't exist
@@ -29,23 +35,53 @@ CONVERTED="$LOC_IN/converted"
 # for each file passed, do the thing
 for file in "$@"
 do
-  echo $file
   if [[ -f $file ]]
   then
     if [[ $file == *.mobi ]]
     then
+      MOBI=$file
+      TITLE=${file%.mobi}
       # send to kindle
-      mv "$file" "$PROCESSING/$file"
-      mpack -s "${file%.mobi}" "$PROCESSING/$file" $KINDLEEMAIL
-      mv "$PROCESSING/$file" "$SENT/$file"
+      echo "No need to convert $MOBI"
+      mv "$MOBI" "$PROCESSING/$MOBI"
+      mpack -s "$TITLE" "$PROCESSING/$MOBI" $KINDLEEMAIL
+      echo "Email sent to $KINDLEEMAIL"
+      if [ $KEEP_ORIGINAL == Yes ]
+      then
+        echo "Storing sent file: $SENT/$MOBI"
+        mv "$PROCESSING/$MOBI" "$SENT/$MOBI"
+      else
+        echo "Deleting $MOBI"
+        rm "$PROCESSING/$MOBI"
+      fi
     fi
     if [[ $file == *.epub ]]
     then
+      EPUB=$file
+      MOBI=${file%.epub}.mobi
+      TITLE=${file%.mobi}
       # convert then send to kindle
-      mv "$file" "$PROCESSING/$file"
-      ebook-convert "$PROCESSING/$file" "$CONVERTED/${file%.epub}.mobi"
-      mpack -s "${file%.epub}" "$CONVERTED/${file%.epub}.mobi" $KINDLEEMAIL
-      mv "$PROCESSING/$file" "$SENT/$file"
+      echo "Converting .epub to .mobi"
+      mv "$EPUB" "$PROCESSING/$EPUB"
+      ebook-convert "$PROCESSING/$EPUB" "$PROCESSING/$MOBI"
+      mpack -s "$TITLE" "$PROCESSING/$MOBI" $KINDLEEMAIL
+      echo "Email sent to $KINDLEEMAIL"
+      if [ $KEEP_ORIGINAL == No ]
+      then
+        echo "Deleting $EPUB"
+        rm "$PROCESSING/$EPUB"
+      else
+        echo "Storing sent file: $SENT/$EPUB"
+        mv "$PROCESSING/$EPUB" "$SENT/$EPUB"
+      fi
+      if [ $KEEP_CONVERTED == No ]
+      then
+        echo "Deleting $MOBI"
+        rm "$PROCESSING/$MOBI"
+      else
+        echo "Storing $MOBI in $SENT"
+        mv "$PROCESSING/$MOBI" "$SENT/$MOBI"
+      fi
     fi
   fi
 done

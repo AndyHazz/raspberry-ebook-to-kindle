@@ -7,7 +7,7 @@
 ######################################################################################
 
 # Email address for kindle
-KINDLEEMAIL="andy.nmc@gmail.com"
+KINDLEEMAIL="andyhazz@kindle.com"
 
 # Directory to process from
 LOC_IN="/home/pi/nfs/volume1/downloads/ebooks/_togo"
@@ -61,7 +61,9 @@ do
       # convert then send to kindle
       echo "Converting .epub to .mobi"
       mv "$EPUB" "$PROCESSING/$EPUB"
+      echo "############ START CONVERSION! ##############"
       ebook-convert "$PROCESSING/$EPUB" "$PROCESSING/$MOBI"
+      echo "############ FINISH CONVERSION ##############"
       mpack -s "$TITLE" "$PROCESSING/$MOBI" $KINDLEEMAIL
       echo "Email sent to $KINDLEEMAIL"
       if [ $KEEP_ORIGINAL == "No" ]

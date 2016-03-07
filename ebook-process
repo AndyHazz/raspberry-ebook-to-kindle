@@ -24,7 +24,7 @@ KEEP_CONVERTED="No"    # ... and converted files in the 'converted' subdir
 mkdir "$LOC_IN/.processing" -p
 PROCESSING="$LOC_IN/.processing"
 
-if [ ! $KEEP_ORIGINAL == "No" && $KEEP_CONVERTED == "No" ]
+if [ ! $KEEP_ORIGINAL == "No" -a $KEEP_CONVERTED == "No" ]
 then
   mkdir "$LOC_IN/sent" -p
   SENT="$LOC_IN/sent"

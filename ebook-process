@@ -28,7 +28,7 @@ if [ ! $KEEP_ORIGINAL == "No" && $KEEP_CONVERTED == "No" ]
 then
   mkdir "$LOC_IN/sent" -p
   SENT="$LOC_IN/sent"
-done
+fi
 
 # for each file passed, do the thing
 for file in "$@"

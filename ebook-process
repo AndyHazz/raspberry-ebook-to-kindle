@@ -27,7 +27,7 @@ CONVERTED="$LOC_IN/converted"
 
 
 # for each file passed, do the thing
-for file in "$@"
+for file in $@
 do
   if [[ -f $file ]]
   then

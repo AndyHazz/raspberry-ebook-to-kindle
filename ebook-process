@@ -14,23 +14,19 @@ LOC_IN="/home/pi/nfs/volume1/downloads/ebooks/_togo"
 
 # Remove converted/sent files after dealing with them? This will leave no files remaining
 # which is fine if you keep a safe copy elsewhere
-KEEP_ORIGINAL=No     # Original files will end up in the 'sent' subdir
-KEEP_CONVERTED=No    # ... and converted files in the 'converted' subdir
+KEEP_ORIGINAL="No"     # Original files will end up in the 'sent' subdir
+KEEP_CONVERTED="No"    # ... and converted files in the 'converted' subdir
 
 
 ######################################################################################
 
 # Create directories if they don't exist
-mkdir "$LOC_IN/processing" -p
-PROCESSING="$LOC_IN/processing"
+mkdir "$LOC_IN/.processing" -p
+PROCESSING="$LOC_IN/.processing"
 
+if [ ! $KEEP_ORIGINAL == "No" && $KEEP_CONVERTED == "No" ]
 mkdir "$LOC_IN/sent" -p
 SENT="$LOC_IN/sent"
-
-mkdir  "$LOC_IN/converted" -p
-CONVERTED="$LOC_IN/converted"
-
-
 
 # for each file passed, do the thing
 for file in "$@"
@@ -46,7 +42,7 @@ do
       mv "$MOBI" "$PROCESSING/$MOBI"
       mpack -s "$TITLE" "$PROCESSING/$MOBI" $KINDLEEMAIL
       echo "Email sent to $KINDLEEMAIL"
-      if [ $KEEP_ORIGINAL == Yes ]
+      if [ $KEEP_ORIGINAL == "Yes" ]
       then
         echo "Storing sent file: $SENT/$MOBI"
         mv "$PROCESSING/$MOBI" "$SENT/$MOBI"
@@ -66,7 +62,7 @@ do
       ebook-convert "$PROCESSING/$EPUB" "$PROCESSING/$MOBI"
       mpack -s "$TITLE" "$PROCESSING/$MOBI" $KINDLEEMAIL
       echo "Email sent to $KINDLEEMAIL"
-      if [ $KEEP_ORIGINAL == No ]
+      if [ $KEEP_ORIGINAL == "No" ]
       then
         echo "Deleting $EPUB"
         rm "$PROCESSING/$EPUB"
@@ -74,7 +70,7 @@ do
         echo "Storing sent file: $SENT/$EPUB"
         mv "$PROCESSING/$EPUB" "$SENT/$EPUB"
       fi
-      if [ $KEEP_CONVERTED == No ]
+      if [ $KEEP_CONVERTED == "No" ]
       then
         echo "Deleting $MOBI"
         rm "$PROCESSING/$MOBI"

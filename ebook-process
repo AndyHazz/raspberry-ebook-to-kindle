@@ -10,7 +10,7 @@
 KINDLEEMAIL="andyhazz@kindle.com"
 
 # Directory to process from
-LOC_IN="/home/pi/nfs/volume1/downloads/ebooks/_togo"
+LOC_IN="/storage/nfs/volume1/downloads/ebooks/_togo"
 
 # Remove converted/sent files after dealing with them? This will leave no files remaining
 # which is fine if you keep a safe copy elsewhere
